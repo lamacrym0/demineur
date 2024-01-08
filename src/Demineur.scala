@@ -53,9 +53,19 @@ class Demineur (dimention:Int){
 
           grid(x)(y).nbBomb = nb
 
-        } else if(x>0 && y>0 && y< grid(x).length-1){   // les case sur les bords de droite
+        } else if(x > 0 && y >0 && y < grid(x).length - 1){   // les case sur les bords de droite
           var nb: Int = 0
 
+          if (grid(x - 1)(y - 1).isBomb)
+            nb += 1
+          if (grid(x - 1)(y).isBomb)
+            nb += 1
+          if (grid(x)(y - 1).isBomb)
+            nb += 1
+          if (grid(x)(y + 1).isBomb)
+            nb += 1
+          if (grid(x - 1)(y + 1).isBomb)
+            nb += 1
 
 
           grid(x)(y).nbBomb = nb
@@ -63,19 +73,98 @@ class Demineur (dimention:Int){
         } else if (x < grid.length-1 && y > 0 && y < grid(x).length - 1) {  // les cases sur les bords de gauche
           var nb: Int = 0
 
+          if (grid(x)(y - 1).isBomb)
+            nb += 1
+          if (grid(x + 1)(y + 1).isBomb)
+            nb += 1
+          if (grid(x + 1)(y).isBomb)
+            nb += 1
+          if (grid(x)(y + 1).isBomb)
+            nb += 1
+          if (grid(x + 1)(y - 1).isBomb)
+            nb += 1
 
 
           grid(x)(y).nbBomb = nb
 
-        } else if (x >0 && x < grid.length - 1 && y< grid(x).length-1) { // les cases sur les bords du haut
+        } else if (x >0 && x < grid.length - 1 && y < grid(x).length-1) { // les cases sur les bords du haut
           var nb: Int = 0
 
+          if (grid(x - 1)(y).isBomb)
+            nb += 1
+          if (grid(x + 1)(y + 1).isBomb)
+            nb += 1
+          if (grid(x + 1)(y).isBomb)
+            nb += 1
+          if (grid(x)(y + 1).isBomb)
+            nb += 1
+          if (grid(x - 1)(y + 1).isBomb)
+            nb += 1
 
           grid(x)(y).nbBomb = nb
 
-        } else{   // les cases sur les bords du bas
+        } else if (x > 0 && x < grid.length - 1 && y > 0) { // les cases sur les bords du bas
           var nb: Int = 0
 
+          if (grid(x - 1)(y - 1).isBomb)
+            nb += 1
+          if (grid(x - 1)(y).isBomb)
+            nb += 1
+          if (grid(x)(y - 1).isBomb)
+            nb += 1
+          if (grid(x + 1)(y).isBomb)
+            nb += 1
+          if (grid(x + 1)(y - 1).isBomb)
+            nb += 1
+
+          grid(x)(y).nbBomb = nb
+
+        } else if (x < grid.length - 1 && y < grid(x).length - 1) { // la case sur le coins haut gauche
+          var nb: Int = 0
+
+
+          if (grid(x + 1)(y + 1).isBomb)
+            nb += 1
+          if (grid(x + 1)(y).isBomb)
+            nb += 1
+          if (grid(x)(y + 1).isBomb)
+            nb += 1
+
+          grid(x)(y).nbBomb = nb
+
+        } else if (x < grid.length - 1 && y > 0) { // // la case sur le coins haut droite
+          var nb: Int = 0
+
+          if (grid(x)(y - 1).isBomb)
+            nb += 1
+          if (grid(x + 1)(y).isBomb)
+            nb += 1
+          if (grid(x + 1)(y - 1).isBomb)
+            nb += 1
+
+          grid(x)(y).nbBomb = nb
+
+        } else if (x > 0 && y < grid(x).length - 1) { // la case sur le coins bas gauche
+          var nb: Int = 0
+
+          if (grid(x)(y - 1).isBomb)
+            nb += 1
+          if (grid(x + 1)(y).isBomb)
+            nb += 1
+          if (grid(x)(y + 1).isBomb)
+            nb += 1
+
+          grid(x)(y).nbBomb = nb
+
+        } else{   // la case sur le coin bas droite
+          var nb: Int = 0
+
+          if (grid(x - 1)(y - 1).isBomb)
+            nb += 1
+          if (grid(x - 1)(y).isBomb)
+            nb += 1
+          if (grid(x)(y - 1).isBomb)
+            nb += 1
 
           grid(x)(y).nbBomb = nb
 
