@@ -4,32 +4,87 @@ import scala.util.Random
  *
  * @param dimention
  */
-class Demineur (dimention:Int){
-  var grid:Array[Array[Cell]] = if(dimention > 4) Array.ofDim(dimention,dimention) else Array.ofDim(5,5)
-  def startGame() : Unit = {
-    setupGrid(dimention)
+class Demineur (var dimention:Int){
+  var nbBomb:Int = 0
+  if(dimention < 5)
+    dimention = 5
+  var grid:Array[Array[Cell]] = Array.ofDim(dimention,dimention)
+
+  def play():Unit = {
+    var end:Boolean = false
+    var nbCellFind:Int = 0
+
+    do{
+      print(s"Entrer un la colonne(nombre entre 1 et $dimention) ")
+      var x = Input.readInt() - 1
+      print(s"Entrer un la ligne(nombre entre 1 et $dimention) ")
+      var y = Input.readInt() - 1
+
+      if(checkCell(x,y)){
+        end = true
+        println("Vous êtes tombé sur une bombe vous avez perdu!")
+        showResult()
+      } else {
+        grid(x)(y).setHide()
+        showGrid()
+        nbCellFind += 1
+      }
+
+      if(nbCellFind == dimention * dimention - nbBomb) {
+        end = true
+        println("Vous avez Gagné")
+      }
+    }while(!end)
+  }
+
+  def checkCell(x:Int,y:Int):Boolean = {
+    if(grid(x)(y).isBomb)
+      return true
+    false
   }
 
   def startGame(nbBomb:Int): Unit = {
+    this.nbBomb = nbBomb
     for (x <- grid.indices; y <- grid(x).indices) {
-      grid(x)(y) = new Cell(x, y)
+      grid(x)(y) = new Cell()
     }
-    if(nbBomb >= math.pow(dimention,2))
-      setupGrid(dimention)
-    else
-      setupGrid(nbBomb)
+
+
+    setupGrid(dimention)
+    showResult() // pour tester
+    play()
 
   }
   def showGrid() : Unit = {
     var res:String = ""
     for (x <- grid.indices) {
       for(y <- grid(x).indices){
-        if (grid(x)(y).isBomb)
-          res += s" B "
-        else
-          res += s" ${grid(x)(y).nbBomb} "
+        if(grid(x)(y).isHide){
+          res += "| "
+        }
+        else {
+          if (grid(x)(y).isBomb)
+            res += s"|B"
+          else
+            res += s"|${grid(x)(y).nbBomb}"
+        }
       }
-      res += "\n"
+      res += "|\n"
+    }
+    println(res)
+  }
+
+  def showResult(): Unit = {
+    var res: String = ""
+    for (x <- grid.indices) {
+      for (y <- grid(x).indices) {
+        if (grid(x)(y).isBomb)
+          res += s"|B"
+        else
+          res += s"|${grid(x)(y).nbBomb}"
+
+      }
+      res += "|\n"
     }
     println(res)
   }
