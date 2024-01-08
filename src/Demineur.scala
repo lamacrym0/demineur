@@ -19,13 +19,15 @@ class Demineur (dimention:Int){
     else
       setupGrid(nbBomb)
 
-    showGrid()
   }
   def showGrid() : Unit = {
     var res:String = ""
     for (x <- grid.indices) {
       for(y <- grid(x).indices){
-        res += s" ${grid(x)(y).nbBomb} "
+        if (grid(x)(y).isBomb)
+          res += s" B "
+        else
+          res += s" ${grid(x)(y).nbBomb} "
       }
       res += "\n"
     }
@@ -42,149 +44,153 @@ class Demineur (dimention:Int){
   }
 
   def setupNbCell(): Unit = {
-    for (x <- grid.indices; y <- grid(x).indices) {
-      if(!grid(x)(y).isBomb){
+    for (x <- grid.indices) {
+      for(y <- grid(x).indices){
+        if (!grid(x)(y).isBomb) {
 
-        if(x >0 && x < grid.length - 1 && y>0 && y< grid(x).length-1){  // les case pas sur les bords
-          var nb: Int = 0
+          if (x > 0 && x < grid.length - 1 && y > 0 && y < grid(x).length - 1) { // les case pas sur les bords
+            var nb: Int = 0
 
-          if (grid(x-1)(y-1).isBomb)
-            nb += 1
-          if (grid(x-1)(y).isBomb)
-            nb += 1
-          if (grid(x)(y-1).isBomb)
-            nb += 1
-          if (grid(x+1)(y+1).isBomb)
-            nb += 1
-          if (grid(x+1)(y).isBomb)
-            nb += 1
-          if (grid(x)(y+1).isBomb)
-            nb += 1
-          if (grid(x+1)(y-1).isBomb)
-            nb += 1
-          if (grid(x-1)(y+1).isBomb)
-            nb += 1
+            if (grid(x - 1)(y - 1).isBomb)
+              nb += 1
+            if (grid(x - 1)(y).isBomb)
+              nb += 1
+            if (grid(x)(y - 1).isBomb)
+              nb += 1
+            if (grid(x + 1)(y + 1).isBomb)
+              nb += 1
+            if (grid(x + 1)(y).isBomb)
+              nb += 1
+            if (grid(x)(y + 1).isBomb)
+              nb += 1
+            if (grid(x + 1)(y - 1).isBomb)
+              nb += 1
+            if (grid(x - 1)(y + 1).isBomb)
+              nb += 1
 
-          grid(x)(y).nbBomb = nb
+            grid(x)(y).nbBomb = nb
 
-        } else if(x > 0 && y >0 && y < grid(x).length - 1){   // les case sur les bords de droite
-          var nb: Int = 0
+          } else if (x > 0 && y > 0 && y < grid(x).length - 1) { // les case sur les bords de droite
+            var nb: Int = 0
 
-          if (grid(x - 1)(y - 1).isBomb)
-            nb += 1
-          if (grid(x - 1)(y).isBomb)
-            nb += 1
-          if (grid(x)(y - 1).isBomb)
-            nb += 1
-          if (grid(x)(y + 1).isBomb)
-            nb += 1
-          if (grid(x - 1)(y + 1).isBomb)
-            nb += 1
-
-
-          grid(x)(y).nbBomb = nb
-
-        } else if (x < grid.length-1 && y > 0 && y < grid(x).length - 1) {  // les cases sur les bords de gauche
-          var nb: Int = 0
-
-          if (grid(x)(y - 1).isBomb)
-            nb += 1
-          if (grid(x + 1)(y + 1).isBomb)
-            nb += 1
-          if (grid(x + 1)(y).isBomb)
-            nb += 1
-          if (grid(x)(y + 1).isBomb)
-            nb += 1
-          if (grid(x + 1)(y - 1).isBomb)
-            nb += 1
+            if (grid(x - 1)(y - 1).isBomb)
+              nb += 1
+            if (grid(x - 1)(y).isBomb)
+              nb += 1
+            if (grid(x)(y - 1).isBomb)
+              nb += 1
+            if (grid(x)(y + 1).isBomb)
+              nb += 1
+            if (grid(x - 1)(y + 1).isBomb)
+              nb += 1
 
 
-          grid(x)(y).nbBomb = nb
+            grid(x)(y).nbBomb = nb
 
-        } else if (x >0 && x < grid.length - 1 && y < grid(x).length-1) { // les cases sur les bords du haut
-          var nb: Int = 0
+          } else if (x < grid.length - 1 && y > 0 && y < grid(x).length - 1) { // les cases sur les bords de gauche
+            var nb: Int = 0
 
-          if (grid(x - 1)(y).isBomb)
-            nb += 1
-          if (grid(x + 1)(y + 1).isBomb)
-            nb += 1
-          if (grid(x + 1)(y).isBomb)
-            nb += 1
-          if (grid(x)(y + 1).isBomb)
-            nb += 1
-          if (grid(x - 1)(y + 1).isBomb)
-            nb += 1
-
-          grid(x)(y).nbBomb = nb
-
-        } else if (x > 0 && x < grid.length - 1 && y > 0) { // les cases sur les bords du bas
-          var nb: Int = 0
-
-          if (grid(x - 1)(y - 1).isBomb)
-            nb += 1
-          if (grid(x - 1)(y).isBomb)
-            nb += 1
-          if (grid(x)(y - 1).isBomb)
-            nb += 1
-          if (grid(x + 1)(y).isBomb)
-            nb += 1
-          if (grid(x + 1)(y - 1).isBomb)
-            nb += 1
-
-          grid(x)(y).nbBomb = nb
-
-        } else if (x < grid.length - 1 && y < grid(x).length - 1) { // la case sur le coins haut gauche
-          var nb: Int = 0
+            if (grid(x)(y - 1).isBomb)
+              nb += 1
+            if (grid(x + 1)(y + 1).isBomb)
+              nb += 1
+            if (grid(x + 1)(y).isBomb)
+              nb += 1
+            if (grid(x)(y + 1).isBomb)
+              nb += 1
+            if (grid(x + 1)(y - 1).isBomb)
+              nb += 1
 
 
-          if (grid(x + 1)(y + 1).isBomb)
-            nb += 1
-          if (grid(x + 1)(y).isBomb)
-            nb += 1
-          if (grid(x)(y + 1).isBomb)
-            nb += 1
+            grid(x)(y).nbBomb = nb
 
-          grid(x)(y).nbBomb = nb
+          } else if (x > 0 && x < grid.length - 1 && y < grid(x).length - 1) { // les cases sur les bords du haut
+            var nb: Int = 0
 
-        } else if (x < grid.length - 1 && y > 0) { // // la case sur le coins haut droite
-          var nb: Int = 0
+            if (grid(x - 1)(y).isBomb)
+              nb += 1
+            if (grid(x + 1)(y + 1).isBomb)
+              nb += 1
+            if (grid(x + 1)(y).isBomb)
+              nb += 1
+            if (grid(x)(y + 1).isBomb)
+              nb += 1
+            if (grid(x - 1)(y + 1).isBomb)
+              nb += 1
 
-          if (grid(x)(y - 1).isBomb)
-            nb += 1
-          if (grid(x + 1)(y).isBomb)
-            nb += 1
-          if (grid(x + 1)(y - 1).isBomb)
-            nb += 1
+            grid(x)(y).nbBomb = nb
 
-          grid(x)(y).nbBomb = nb
+          } else if (x > 0 && x < grid.length - 1 && y > 0) { // les cases sur les bords du bas
+            var nb: Int = 0
 
-        } else if (x > 0 && y < grid(x).length - 1) { // la case sur le coins bas gauche
-          var nb: Int = 0
+            if (grid(x - 1)(y - 1).isBomb)
+              nb += 1
+            if (grid(x - 1)(y).isBomb)
+              nb += 1
+            if (grid(x)(y - 1).isBomb)
+              nb += 1
+            if (grid(x + 1)(y).isBomb)
+              nb += 1
+            if (grid(x + 1)(y - 1).isBomb)
+              nb += 1
 
-          if (grid(x)(y - 1).isBomb)
-            nb += 1
-          if (grid(x + 1)(y).isBomb)
-            nb += 1
-          if (grid(x)(y + 1).isBomb)
-            nb += 1
+            grid(x)(y).nbBomb = nb
 
-          grid(x)(y).nbBomb = nb
+          } else if (x < grid.length - 1 && y < grid(x).length - 1) { // la case sur le coins haut gauche
+            var nb: Int = 0
 
-        } else{   // la case sur le coin bas droite
-          var nb: Int = 0
 
-          if (grid(x - 1)(y - 1).isBomb)
-            nb += 1
-          if (grid(x - 1)(y).isBomb)
-            nb += 1
-          if (grid(x)(y - 1).isBomb)
-            nb += 1
+            if (grid(x + 1)(y + 1).isBomb)
+              nb += 1
+            if (grid(x + 1)(y).isBomb)
+              nb += 1
+            if (grid(x)(y + 1).isBomb)
+              nb += 1
 
-          grid(x)(y).nbBomb = nb
+            grid(x)(y).nbBomb = nb
+
+          } else if (x > 0 && y < grid(x).length - 1) { // // la case sur le coins haut droite
+            var nb: Int = 0
+
+            if (grid(x)(y + 1).isBomb)
+              nb += 1
+            if (grid(x - 1)(y+1).isBomb)
+              nb += 1
+            if (grid(x - 1)(y).isBomb)
+              nb += 1
+
+            grid(x)(y).nbBomb = nb
+
+          } else if (x > 0 && y > 0) { // la case sur le coins bas droite
+            var nb: Int = 0
+
+            if (grid(x - 1)(y - 1).isBomb)
+              nb += 1
+            if (grid(x - 1)(y).isBomb)
+              nb += 1
+            if (grid(x)(y - 1).isBomb)
+              nb += 1
+
+            grid(x)(y).nbBomb = nb
+
+          } else { // la case sur le coin bas gauche
+            var nb: Int = 0
+
+            if (grid(x)(y - 1).isBomb)
+              nb += 1
+            if (grid(x + 1)(y - 1).isBomb)
+              nb += 1
+            if (grid(x + 1)(y).isBomb)
+              nb += 1
+
+
+            grid(x)(y).nbBomb = nb
+
+          }
 
         }
-
       }
+
     }
   }
 
