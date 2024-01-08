@@ -7,7 +7,7 @@ import scala.util.Random
 class Demineur (dimention:Int){
   var grid:Array[Array[Cell]] = if(dimention > 4) Array.ofDim(dimention,dimention) else Array.ofDim(5,5)
   def startGame() : Unit = {
-    val nbBomb = dimention
+    setupGrid(dimention)
   }
 
   def startGame(nbBomb:Int): Unit = {
@@ -15,16 +15,30 @@ class Demineur (dimention:Int){
       grid(x)(y) = new Cell(x, y)
     }
     if(nbBomb >= math.pow(dimention,2))
-      generBomb(dimention)
+      setupGrid(dimention)
     else
-      generBomb(nbBomb)
+      setupGrid(nbBomb)
+
+    showGrid()
+  }
+  def showGrid() : Unit = {
+    var res:String = ""
+    for (x <- grid.indices) {
+      for(y <- grid(x).indices){
+        res += s" ${grid(x)(y).nbBomb} "
+      }
+      res += "\n"
+    }
+    println(res)
   }
 
-  def setupGrid() : Unit = {
+  def setupGrid(nbBomb:Int) : Unit = {
     for(x <- grid.indices; y <- grid(x).indices){
       grid(x)(y) = new Cell(x,y)
     }
-    generBomb(dimention)
+    generBomb(nbBomb)
+
+    setupNbCell()
   }
 
   def setupNbCell(): Unit = {
