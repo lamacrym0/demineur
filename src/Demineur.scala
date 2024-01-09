@@ -8,6 +8,8 @@ class Demineur (var dimention:Int){
   var nbBomb:Int = 0
   if(dimention < 5)
     dimention = 5
+  if(dimention > 14)
+    dimention = 15
   var grid:Array[Array[Cell]] = Array.ofDim(dimention,dimention)
 
   def play():Unit = {
@@ -45,10 +47,6 @@ class Demineur (var dimention:Int){
 
   def startGame(nbBomb:Int): Unit = {
     this.nbBomb = nbBomb
-    for (x <- grid.indices; y <- grid(x).indices) {
-      grid(x)(y) = new Cell()
-    }
-
 
     setupGrid(dimention)
     showResult() // pour tester
@@ -57,8 +55,8 @@ class Demineur (var dimention:Int){
   }
   def showGrid() : Unit = {
     var res:String = ""
-    for (x <- grid.indices) {
-      for(y <- grid(x).indices){
+    for (y <- grid.indices) {
+      for(x <- grid(y).indices){
         if(grid(x)(y).isHide){
           res += "| "
         }
@@ -76,8 +74,8 @@ class Demineur (var dimention:Int){
 
   def showResult(): Unit = {
     var res: String = ""
-    for (x <- grid.indices) {
-      for (y <- grid(x).indices) {
+    for (y <- grid.indices) {
+      for (x <- grid(y).indices) {
         if (grid(x)(y).isBomb)
           res += s"|B"
         else
@@ -91,7 +89,7 @@ class Demineur (var dimention:Int){
 
   def setupGrid(nbBomb:Int) : Unit = {
     for(x <- grid.indices; y <- grid(x).indices){
-      grid(x)(y) = new Cell(x,y)
+      grid(x)(y) = new Cell()
     }
     generBomb(nbBomb)
 
