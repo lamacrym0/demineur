@@ -5,7 +5,7 @@
  */
 class Cell(var nbBomb:Int = 0) {
   var isBomb:Boolean = false
-  var haveFlag:Boolean = false
+  var isFlag:Boolean = false
   var isHide:Boolean = true
 
   /***
@@ -20,7 +20,15 @@ class Cell(var nbBomb:Int = 0) {
     true
   }
 
-  def setHide():Boolean = {
+  /**
+   *
+   * @return true si la case a un drapeau, sinon flase
+   */
+  def setFlag():Unit = {
+    isFlag = !isFlag
+  }
+
+  def displayCell():Boolean = {
     if(! isHide)
       return false
 
@@ -28,13 +36,7 @@ class Cell(var nbBomb:Int = 0) {
     true
   }
 
-  /**
-   *
-   * @return true si la case a un drapeau, sinon flase
-   */
-  def setFlag():Boolean = {
-    haveFlag = !haveFlag
-    haveFlag
-  }
+
+
 
 }
