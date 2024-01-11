@@ -1,3 +1,7 @@
+import hevs.graphics.FunGraphics
+
+import java.awt.Color
+import java.awt.event.{MouseEvent, MouseListener}
 import scala.util.Random
 
 /***
@@ -7,6 +11,18 @@ import scala.util.Random
 class Demineur (var dimention:Int){
   var nbBomb:Int = 0
   var nbCellFind:Int = 0
+  var window:FunGraphics = null
+  var a:MouseListener = new MouseListener {
+    override def mouseClicked(e: MouseEvent): Unit = onCellClick(e)
+
+    override def mousePressed(e: MouseEvent): Unit = {}
+
+    override def mouseReleased(e: MouseEvent): Unit = {}
+
+    override def mouseEntered(e: MouseEvent): Unit = {}
+
+    override def mouseExited(e: MouseEvent): Unit = {}
+  }
   if(dimention < 5)
     dimention = 5
   if(dimention > 14)
@@ -15,7 +31,6 @@ class Demineur (var dimention:Int){
 
   def play():Unit = {
     var end:Boolean = false
-
 
     do {
       var action:Char = ' '
@@ -41,9 +56,17 @@ class Demineur (var dimention:Int){
             reAskCo()
           }
         }
+        if (checkCell(x, y)) {
+          end = true
+          println("Vous êtes tombé sur une bombe vous avez perdu!")
+          showResult()
+        } else {
+          displayCells(x, y)
+          showGrid()
+        }
 
-      } else {
-
+      }
+      else {
         while (x < 0 || x >= dimention || y < 0 || y >= dimention) {
           reAskCo()
         }
@@ -53,20 +76,8 @@ class Demineur (var dimention:Int){
             reAskCo()
           }
         }
-      }
-
-      if(action == 'F' || action == 'f') {
         grid(x)(y).setFlag()
         showGrid()
-      } else {
-        if (checkCell(x, y)) {
-          end = true
-          println("Vous êtes tombé sur une bombe vous avez perdu!")
-          showResult()
-        } else {
-          displayCells(x, y)
-          showGrid()
-        }
       }
 
       if(nbCellFind == dimention * dimention - nbBomb) {
@@ -89,6 +100,27 @@ class Demineur (var dimention:Int){
         y = Input.readInt() - 1
       }
     }while(!end)
+
+  }
+
+  def playWindow(x:Int,y:Int): Unit = {
+    var end: Boolean = false
+
+    if (checkCell(x, y)) {
+      end = true
+      println("Vous êtes tombé sur une bombe vous avez perdu!")
+      showResult()
+    } else {
+      displayCells(x, y)
+      showGridWindow()
+    }
+
+    if (nbCellFind == dimention * dimention - nbBomb) {
+      end = true
+      println("Vous avez Gagné")
+    }
+
+
 
   }
 
@@ -195,6 +227,28 @@ class Demineur (var dimention:Int){
 
   }
 
+  def setupGridWindow():Unit = {
+    for (x <- grid.indices; y <- grid(x).indices) {
+      window.drawRect(x*20,y*20,20,20)
+
+    }
+  }
+
+  def startGameWindow(nbBomb: Int): Unit = {
+    window = new FunGraphics(dimention*20,dimention*20)
+    window.addMouseListener(a)
+    nbCellFind = 0
+    this.nbBomb = nbBomb
+    if (nbBomb >= dimention * dimention || nbBomb <= 0) {
+      this.nbBomb = dimention
+    }
+
+    setupGrid(this.nbBomb)
+    setupGridWindow()
+    showResult() // pour tester
+
+  }
+
   def showGrid() : Unit = {
     var res:String = ""
     for (y <- grid.indices) {
@@ -211,6 +265,33 @@ class Demineur (var dimention:Int){
       res += "|\n"
     }
     println(res)
+  }
+
+  def showGridWindow(): Unit = {
+    var res: String = ""
+    for (y <- grid.indices) {
+      for (x <- grid(y).indices) {
+        if (grid(x)(y).isFlag) {
+          window.drawString(x*20,y*20,grid(x)(y).nbBomb.toString,Color.BLACK,20)
+          res += "|F"
+        } else if (grid(x)(y).isHide) {
+          window.drawRect(x*20,y*20,20,20)
+          res += "| "
+        }
+        else {
+          window.drawString(x*20,(y+1)*20,grid(x)(y).nbBomb.toString,Color.BLACK,20)
+          res += s"|${grid(x)(y).nbBomb}"
+        }
+      }
+      res += "|\n"
+    }
+    println(res)
+  }
+
+
+  def onCellClick(e:MouseEvent): Unit = {
+    println(s"x: ${e.getX / 20}, y: ${e.getY / 20}")
+    playWindow(e.getX / 20,e.getY / 20)
   }
 
   def showResult(): Unit = {
