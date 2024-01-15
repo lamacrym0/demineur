@@ -1,7 +1,7 @@
 import hevs.graphics.FunGraphics
 
-import java.awt.Color
-import java.awt.event.{MouseEvent, MouseListener}
+import java.awt.{Color, Polygon}
+import java.awt.event.{KeyEvent, KeyListener, MouseEvent, MouseListener}
 import scala.util.Random
 
 /***
@@ -12,7 +12,8 @@ class Demineur (var dimention:Int){
   var nbBomb:Int = 0
   var nbCellFind:Int = 0
   var window:FunGraphics = null
-  var a:MouseListener = new MouseListener {
+  var end: Boolean = false
+  var mouseListener:MouseListener = new MouseListener {
     override def mouseClicked(e: MouseEvent): Unit = onCellClick(e)
 
     override def mousePressed(e: MouseEvent): Unit = {}
@@ -23,6 +24,14 @@ class Demineur (var dimention:Int){
 
     override def mouseExited(e: MouseEvent): Unit = {}
   }
+  var keyListener:KeyListener = new KeyListener {
+    override def keyTyped(e: KeyEvent): Unit = onKeyPress(e)
+
+    override def keyPressed(e: KeyEvent): Unit = {}
+
+    override def keyReleased(e: KeyEvent): Unit = {}
+  }
+
   if(dimention < 5)
     dimention = 5
   if(dimention > 14)
@@ -103,25 +112,40 @@ class Demineur (var dimention:Int){
 
   }
 
-  def playWindow(x:Int,y:Int): Unit = {
-    var end: Boolean = false
+  def playWindow(x:Int,y:Int,button:Int): Unit = {
 
-    if (checkCell(x, y)) {
-      end = true
-      println("Vous êtes tombé sur une bombe vous avez perdu!")
-      showResult()
-    } else {
-      displayCells(x, y)
-      showGridWindow()
+    if(!end){
+      if(button == 1 && !grid(x)(y).isFlag){
+        if (checkCell(x, y)) {
+          end = true
+          println("Vous êtes tombé sur une bombe vous avez perdu!")
+          window.clear()
+          window.drawString(nbBomb/2*20-40,20,"Vous avez perdu!")
+          window.drawString(nbBomb/2*20-50,40,"Appuyez sur espace")
+          window.drawString(nbBomb/2*20-45,60,"pour recommencer.")
+          showResult()
+        } else {
+          displayCells(x, y)
+          showGridWindow()
+        }
+
+        if (nbCellFind == dimention * dimention - nbBomb) {
+          end = true
+          println("Vous avez Gagné")
+          window.clear()
+          window.drawString(nbBomb / 2 * 20 - 40, 20, "Vous avez Gagné!")
+          window.drawString(nbBomb / 2 * 20 - 50, 40, "Appuyez sur espace")
+          window.drawString(nbBomb / 2 * 20 - 45, 60, "pour recommencer.")
+        }
+      }
+      else if(button == 3){
+        if(grid(x)(y).isHide) {
+          grid(x)(y).setFlag()
+          showGridWindow()
+        }
+      }
+
     }
-
-    if (nbCellFind == dimention * dimention - nbBomb) {
-      end = true
-      println("Vous avez Gagné")
-    }
-
-
-
   }
 
   def checkCell(x:Int,y:Int):Boolean = {
@@ -236,9 +260,12 @@ class Demineur (var dimention:Int){
 
   def startGameWindow(nbBomb: Int): Unit = {
     window = new FunGraphics(dimention*20,dimention*20)
-    window.addMouseListener(a)
+    window.addMouseListener(mouseListener)
+    window.setKeyManager(keyListener)
     nbCellFind = 0
+    end = false
     this.nbBomb = nbBomb
+
     if (nbBomb >= dimention * dimention || nbBomb <= 0) {
       this.nbBomb = dimention
     }
@@ -268,30 +295,31 @@ class Demineur (var dimention:Int){
   }
 
   def showGridWindow(): Unit = {
-    var res: String = ""
     for (y <- grid.indices) {
       for (x <- grid(y).indices) {
         if (grid(x)(y).isFlag) {
-          window.drawString(x*20,y*20,grid(x)(y).nbBomb.toString,Color.BLACK,20)
-          res += "|F"
+          window.drawString(x*20,(y+1)*20,"D",Color.red,20)
         } else if (grid(x)(y).isHide) {
+          window.drawString(x*20,(y+1)*20,"D",Color.white,20)
           window.drawRect(x*20,y*20,20,20)
-          res += "| "
         }
-        else {
+        else if(!grid(x)(y).isDraw){
           window.drawString(x*20,(y+1)*20,grid(x)(y).nbBomb.toString,Color.BLACK,20)
-          res += s"|${grid(x)(y).nbBomb}"
+          grid(x)(y).setDraw()
         }
       }
-      res += "|\n"
     }
-    println(res)
   }
 
+  def onKeyPress(e:KeyEvent):Unit = {
+    if(e.getKeyChar == 32 && end){
+      startGameWindow(nbBomb)
+    }
+  }
 
   def onCellClick(e:MouseEvent): Unit = {
     println(s"x: ${e.getX / 20}, y: ${e.getY / 20}")
-    playWindow(e.getX / 20,e.getY / 20)
+    playWindow(e.getX / 20,(e.getY / 20),e.getButton)
   }
 
   def showResult(): Unit = {

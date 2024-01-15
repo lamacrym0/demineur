@@ -7,6 +7,7 @@ class Cell(var nbBomb:Int = 0) {
   var isBomb:Boolean = false
   var isFlag:Boolean = false
   var isHide:Boolean = true
+  var isDraw:Boolean = false
 
   /***
    * met la bombe dans la case
@@ -26,6 +27,10 @@ class Cell(var nbBomb:Int = 0) {
    */
   def setFlag():Unit = {
     isFlag = !isFlag
+  }
+
+  def setDraw(): Unit = {
+    isDraw = true
   }
 
   def displayCell():Boolean = {
